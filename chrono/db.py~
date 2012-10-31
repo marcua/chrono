@@ -1,9 +1,0 @@
-class DBHandler(object):
-  def insert(series_name, series_properties, event):
-    colname = uuid1()
-    timestamp = ((colname.time - 0x01b21dd213814000L)*100/1e9)
-    bucket = timestamp - (timestamp % BUCKET_TIME)
-    key = "%s-%d" % (series_name, bucket)
-    # TODO: add a number of buckets to distribute load for each minute to multiple nodes
-    self.__insert(THE_DB[key].append((colname, json.dumps(event['data'])))
-
