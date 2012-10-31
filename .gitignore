@@ -1,5 +1,8 @@
 *.py[co]
 
+# Emacs
+*~
+
 # Packages
 *.egg
 *.egg-info

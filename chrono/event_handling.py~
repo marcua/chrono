@@ -1,0 +1,23 @@
+from collections import defaultdict
+from datetime import datetime
+from uuid import uuid1
+
+import json
+
+THE_DB = defaultdict(list)
+BUCKET_TIME = 60 # number of seconds to place into a single bucket
+
+def insert_event(series_name, event):
+  if 'time' not in event:
+    event['time'] = 
+
+uuid1()
+  timestamp = ((colname.time - 0x01b21dd213814000L)*100/1e9)
+  bucket = timestamp - (timestamp % BUCKET_TIME)
+  key = "%s-%d" % (series_name, bucket)
+  # TODO: add a number of buckets to distribute load for each minute to multiple nodes
+  THE_DB[key].append((colname, json.dumps(event['data'])))
+  print THE_DB
+
+if __name__ == "__main__":
+  insert_event({'type': 'pageclick', 'data': {}})
