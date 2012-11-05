@@ -22,6 +22,7 @@ def add_events(series_name):
   if not param_errors(series_name, request.json, resp):
     for event in request.json:
       insert_event(settings.SERIES[series_name], event, resp)
+  # TODO: set status code to 400 if errors
   return json.dumps(resp)
 
 @app.route('/1.0/event/<series_name>/get/', methods=['POST'])
