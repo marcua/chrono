@@ -28,6 +28,7 @@ class DBHandler(object):
       unique_id = UUID(fields=(time_low, time_mid, time_hi_version,
                               timeuuid.clock_seq_hi_variant, timeuuid.clock_seq_low, 
                               timeuuid.node), version=1)
+      event['id'] = unique_id
     floor_time = int(event['time'])
     bucket = floor_time - (floor_time % series['bucket_seconds'])
     self._insert(series['name'], event, bucket, unique_id)
@@ -41,8 +42,10 @@ class DBHandler(object):
     floor_end = int(end_time)
     end_bucket = floor_end - (floor_end % bucket_seconds) + bucket_seconds
     
-    return chain(self._retrieve(series, bucket, start_time, start_id, end_time)
-                 for bucket in xrange(start_bucket, end_bucket, bucket_seconds))
+    results = list(chain(*(
+        self._retrieve(series, bucket, start_time, start_id, end_time, max_events)
+        for bucket in xrange(start_bucket, end_bucket, bucket_seconds))))
+    return results, True
 
   def _insert(self, series, event, unique_id):
     '''
@@ -54,26 +57,26 @@ class DBHandler(object):
   def _retrieve(self, series, bucket, start_time, end_time):
     raise NotImplementedError("Must implement __insert method")
 
-  def retrieve(self, series, start, end):
-    pass
-
 
 class InMemoryDBHandler(DBHandler):
   def __init__(self):
     self.__db = defaultdict(list)
+
   def _insert(self, series_name, event, bucket, unique_id):
     key = '%s-%d' % (series_name, bucket)
+    event['id'] = str(event['id'])
     self.__db[key].append((unique_id, json.dumps(event)))
-    print self.__db
-  def _retrieve(self, series, bucket, start_time, start_id, end_time, max_items):
+
+  def _retrieve(self, series_name, bucket, start_time, start_id, end_time, max_items):
     key = '%s-%d' % (series_name, bucket)
     bucket = self.__db[key]
     items = sorted(bucket, key=itemgetter(0))
     if start_id != None:
-      items = (item for item in items if item['id'] > start_id)
-#    items = (item 
-    return (event for unique_id, event in ordered if
-            (event['time'] < end_time) and (event['time'] > start_time))
+      items = ((unique_id, json.loads(item)) for unique_id, item in items
+               if unique_id > start_id)
+    items = (item for unique_id, item in items if
+             (item['time'] <= end_time) and (item['time'] >= start_time))
+    return items
 
 
 db_handler = InMemoryDBHandler()

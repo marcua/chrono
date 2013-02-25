@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from errors import add_param_errors, get_param_errors
-from event_handling import insert_event, get_events
+from event_handling import insert_event, retrieve_events
 from chrono_setup import start_error
 from flask import Flask, request, json
 import settings
@@ -20,12 +20,10 @@ def add_events(series_name):
 @app.route('/1.0/event/<series_name>/get/', methods=['POST'])
 def get_events(series_name):
   resp = {'errors': [], 'results': None, 'done': False}
-  '''
   if not get_param_errors(series_name, request.json, resp):
     series = settings.SERIES[series_name]
-    get_events(series, request.json, resp)
+    retrieve_events(series, request.json, resp)
   # TODO(marcua): set status code to 400 if errors
-  '''
   return json.dumps(resp)
 
 

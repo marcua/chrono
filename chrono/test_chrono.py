@@ -47,7 +47,7 @@ def setup_gets():
 def teardown_gets():
   pass
 
-'''
+
 @with_setup(setup_gets, teardown_gets)
 def test_get_requests():
   headers = {'content-type': 'application/json'}
@@ -62,5 +62,6 @@ def test_get_requests():
 
   url = "%s/1.0/event/party/get/" % BASE_URL
   r = requests.post(url, data=json.dumps(start_and_end_time), headers=HEADERS)
+  print r.text
   assert r.text == """{"timestamped": 0, "errors": [], "inserted": 1}"""
-'''
+

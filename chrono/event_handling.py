@@ -27,11 +27,9 @@ def insert_event(series, event, resp):
     resp['inserted'] += 1
 
 MAX_RETRIEVE = 1000
-def get_events(series, params, resp):
-  start_id = request.json.get('start_id', None)
-  start_time = request.json.get('start_time', None)
-  end_time = request.json.get('end_time', None)
-  resp['events'], resp['done'] = (
-    db_handler.retrieve(series, start_time, start_id, end_time, MAX_RETRIEVE))
-  
-
+def retrieve_events(series, params, resp):
+  start_id = params.get('start_id', None)
+  start_time = params.get('start_time', None)
+  end_time = params.get('end_time', None)
+  resp['results'], resp['done'] = (
+    db_handler.retrieve(series, start_time, start_id, end_time, MAX_RETRIEVE))  
