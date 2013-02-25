@@ -14,7 +14,7 @@ def insert_event(series, event, resp):
     error = True
 
   unique_id = event.get('id', None)
-  if unique_id == None:
+  if unique_id != None:
     try:
       event['id'] = uuid.UUID(unique_id)
     except:
@@ -26,5 +26,12 @@ def insert_event(series, event, resp):
     db_handler.insert(series, event)
     resp['inserted'] += 1
 
-if __name__ == "__main__":
-  insert_event({'data': {}})
+MAX_RETRIEVE = 1000
+def get_events(series, params, resp):
+  start_id = request.json.get('start_id', None)
+  start_time = request.json.get('start_time', None)
+  end_time = request.json.get('end_time', None)
+  resp['events'], resp['done'] = (
+    db_handler.retrieve(series, start_time, start_id, end_time, MAX_RETRIEVE))
+  
+

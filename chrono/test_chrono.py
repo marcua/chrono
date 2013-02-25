@@ -30,13 +30,14 @@ def test_add_request():
     ]
   url = "%s/1.0/event/party/put/" % BASE_URL
   r = requests.post(url, data=json.dumps(payload), headers=HEADERS)
+  print r.text
   assert r.text == """{"timestamped": 0, "errors": [], "inserted": 1}"""
 
 def setup_gets():
   payload = [
     {
       "time": 1351790542.445142,
-      "id": b26fc7d4-2448-11e2-bca8-68a86d1dc518,
+      "id": 'b26fc7d4-2448-11e2-bca8-68a86d1dc518',
       "data": {'boo':'123'}
       }
     ]
@@ -46,25 +47,20 @@ def setup_gets():
 def teardown_gets():
   pass
 
+'''
 @with_setup(setup_gets, teardown_gets)
 def test_get_requests():
   headers = {'content-type': 'application/json'}
-  start_date_only = {
-    "start_time": 1351698990.812487,
-  }
-  start_id_only = {
-    "start_id": "",
-  }
   start_and_end_time = {
-    "start_time": 1351698990.812487,
-    "end_time": 1351698990.812487,
+    "start_time": 1351695890.812487,
+    "end_time": 1351699890,
   }
   start_id_end_time = {
     "start_id": 1351698990.812487,
     "end_time": 1351698990.812487,
   }
 
-  url = "%s/1.0/event/party/put/" % BASE_URL
-  r = requests.post(url, data=json.dumps(payload), headers=HEADERS)
+  url = "%s/1.0/event/party/get/" % BASE_URL
+  r = requests.post(url, data=json.dumps(start_and_end_time), headers=HEADERS)
   assert r.text == """{"timestamped": 0, "errors": [], "inserted": 1}"""
-
+'''
